@@ -1,0 +1,53 @@
+{
+  "model_type": "Polynomial Regression (Pipeline)",
+  "base_regressor": "RidgeCV",
+  "degree": 4,
+  "interaction_only": false,
+  "with_scaler": true,
+  "features_original": [
+    "log_moneyness",
+    "T"
+  ],
+  "features_expanded_count": 14,
+  "features_expanded_names": [
+    "log_moneyness",
+    "T",
+    "log_moneyness^2",
+    "log_moneyness T",
+    "T^2",
+    "log_moneyness^3",
+    "log_moneyness^2 T",
+    "log_moneyness T^2",
+    "T^3",
+    "log_moneyness^4",
+    "log_moneyness^3 T",
+    "log_moneyness^2 T^2",
+    "log_moneyness T^3",
+    "T^4"
+  ],
+  "target": "iv_teorica",
+  "fit_intercept": true,
+  "n_obs": 5970843,
+  "intercept": 0.2203126420973658,
+  "coefs_expanded": {
+    "log_moneyness": -0.12271134544425877,
+    "T": -0.14769276730294223,
+    "log_moneyness^2": 0.3485098122910131,
+    "log_moneyness T": 0.42648490249484894,
+    "T^2": 0.5755121718721057,
+    "log_moneyness^3": 0.23201595314094448,
+    "log_moneyness^2 T": -0.37908762977895094,
+    "log_moneyness T^2": -0.7012313093564444,
+    "T^3": -0.764038309094758,
+    "log_moneyness^4": 0.03828659233840881,
+    "log_moneyness^3 T": -0.12637834622910304,
+    "log_moneyness^2 T^2": 0.15209812057219096,
+    "log_moneyness T^3": 0.3610371209524601,
+    "T^4": 0.3385270512790157
+  },
+  "alpha_star": 0.1,
+  "trained_at": "2025-10-24T00:54:04.842872Z",
+  "date_min": "2009-01-02 00:00:00",
+  "date_max": "2017-12-26 00:00:00",
+  "pred_col": "ivs_modelo"
+}

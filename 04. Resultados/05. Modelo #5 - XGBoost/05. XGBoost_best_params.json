@@ -1,0 +1,17 @@
+{
+  "best_params": {
+    "objective": "reg:squarederror",
+    "eval_metric": "rmse",
+    "max_depth": 5,
+    "min_child_weight": 5,
+    "gamma": 0.05625268880566674,
+    "subsample": 0.7050058636738239,
+    "colsample_bytree": 0.6946421476297646,
+    "learning_rate": 0.03472942428328025,
+    "reg_lambda": 4.383497437114556,
+    "reg_alpha": 0.8137436541638764,
+    "n_estimators": 1600,
+    "n_jobs": -1
+  },
+  "best_iteration": 1599
+}

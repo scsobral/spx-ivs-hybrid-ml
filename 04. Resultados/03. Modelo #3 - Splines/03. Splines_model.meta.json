@@ -1,0 +1,28 @@
+{
+  "model_type": "Tensor-Product B-Splines (Pipeline)",
+  "base_regressor": "RidgeCV",
+  "degree": 3,
+  "include_bias": false,
+  "with_scaler": true,
+  "knots_mode_requested": "quantile",
+  "knots_mode_used_m": "quantile",
+  "knots_mode_used_t": "quantile",
+  "extrapolation": "linear",
+  "n_knots_m": 12,
+  "n_knots_t": 4,
+  "features_original": [
+    "log_moneyness",
+    "T"
+  ],
+  "features_expanded_count": 65,
+  "basis_dim_m": 13,
+  "basis_dim_t": 5,
+  "target": "iv_teorica",
+  "fit_intercept": true,
+  "n_obs": 7505238,
+  "alpha_star": 0.01,
+  "trained_at": "2025-10-24T08:29:24.284990+00:00Z",
+  "date_min": "2009-01-02 00:00:00",
+  "date_max": "2018-09-21 00:00:00",
+  "pred_col": "ivs_modelo"
+}

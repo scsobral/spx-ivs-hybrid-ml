@@ -1,0 +1,133 @@
+# Projeto: Tese de Mestrado — Modelação da Superfície de Volatilidade Implícita (IVS) com Técnicas de Machine Learning
+
+## Objetivo Geral
+
+O objetivo principal deste projeto é modelar e prever a superfície de volatilidade implícita (IV) de opções sobre o índice S&P 500 (SPX), utilizando abordagens estatísticas clássicas e técnicas de machine learning. A variável a prever é a volatilidade implícita (IV), modelada como função do log-moneyness (log(K/S)) e do tempo até à maturidade (T), com possibilidade de extensão com variáveis exógenas como o VIX ou o EPU.
+
+---
+
+## Dados Utilizados
+
+- **Ativo subjacente**: Opções sobre o índice SPX (S&P 500)
+- **Tipo de opções**: Calls e Puts
+- **Frequência**: Diária
+- **Período coberto**: 02-01-2009 a 30-04-2019
+- **Fonte**: CBOE Option EOD Summary
+- **Formato**: CSV (com dicionário de dados partilhado)
+
+---
+
+## Estrutura de Pastas do Projeto
+
+Notebooks/
+├── 00. Configuração/
+├── 01. Exploração/
+├── 02. Transformações/
+├── 03. Modelação/
+└── 04. Resultados/
+
+Dados/
+├── 01. Inputs/
+└── 02. Dados Tratados/
+
+Output/
+├── 01. Gráficos/
+├── 02. Tabelas/
+└── 03. Excels/
+
+Documentos/
+├── 01. Versões Word/
+├── 02. Imagens Word/
+└── 03. Referências/
+
+
+---
+
+## Etapas Metodológicas
+
+1. **Modelos Clássicos**  
+   - Regressão linear (OLS)
+   - Regressão polinomial
+   - Splines cúbicos naturais
+
+2. **Modelos Híbridos**  
+   - Machine Learning aplicado aos resíduos dos modelos clássicos (Random Forest)
+
+3. **Modelos de Machine Learning Diretos**  
+   - Random Forest
+   - XGBoost
+
+4. **Extensão (Opcional)**  
+   - Inclusão de variáveis exógenas (ex: VIX, EPU)
+
+---
+
+## Métricas de Avaliação
+
+- RMSE (Root Mean Squared Error)
+- MAE (Mean Absolute Error)
+- R² (Coeficiente de Determinação)
+- Análise de resíduos
+- Importância das variáveis (para modelos de ML)
+- Visualização 3D da superfície de IV estimada vs. observada
+
+---
+
+
+## Instruções Específicas para o Agent
+
+### 📁 Funções auxiliares globais
+
+Será criado um ficheiro Jupyter chamado `02. Funções Gerais.ipynb` dentro da pasta: Tese - IVS with ML Techniques/01. Notebooks/00. Configuração/
+
+
+Este ficheiro servirá como base para armazenar **funções reutilizáveis ao longo do projeto**, como:
+
+- Funções de cálculo de métricas (RMSE, MAE, R²)
+- Funções de visualização consistentes
+- Funções auxiliares de manipulação
+
+Sempre que uma função já estiver neste ficheiro, deve ser **importada ou replicada no notebook local** conforme o contexto (o agent pode sugerir reutilização em vez de reescrever tudo).
+
+---
+
+### 📊 Visualizações
+
+As configurações globais de visualização de gráficos devem ser centralizadas no mesmo ficheiro `02. Funções Gerais.ipynb`, para garantir consistência em termos de:
+
+- Estilo (fonte, cores, grelha)
+- Tamanho de figuras
+- Templates de `plotly` ou temas de `matplotlib`
+
+---
+
+### 📓 Estrutura base dos meus notebooks (não deve ser alterada):
+
+1. **Cabeçalho Markdown**  
+   Pequena descrição do notebook, autor, e data.
+
+2. **Importação de bibliotecas**  
+   Apenas as necessárias. Agrupadas de forma limpa.
+
+3. **Designações centrais e caminhos**  
+   Diretórios e nomes de ficheiros que poderão ser reutilizados em todo o notebook:
+   - `DIR_INPUT`
+   - `DIR_TRATADOS`
+   - `DIR_OUTPUT`
+   - `DIR_EXCELS`
+   - `DIR_GRAFICOS`
+   - `FICHEIRO_INPUT`
+   - `FICHEIRO_OUTPUT`
+
+4. **Funções**  
+   Tanto funções locais (definidas diretamente no notebook) como importadas do ficheiro `funcoes_modelos.py` ou do `02. Funções Gerais.ipynb`.
+
+5. **Carregamento de dados**  
+   Leitura do ficheiro de input com `pd.read_csv`, visualização de `shape` e `.head()`.
+
+6. **Resultados**  
+   Visualizações e exportação de resultados (pandas `.to_excel()`, `.to_pickle()`, `plt.savefig()`, etc).
+
+---
+
+O agente deve seguir esta estrutura como padrão, salvo indicação explícita em contrário.

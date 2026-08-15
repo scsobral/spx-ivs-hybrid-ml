@@ -1,0 +1,20 @@
+# 1. Ambientes Virtuais e Ficheiros de Sistema
+venv_tese/
+__pycache__/
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
+.tmp*
+
+# 2. Camada de Dados (Bloqueio Total)
+02. Dados/
+
+# 3. Documentos (Exclusão total da pasta de suporte pessoal/tese)
+05. Documentos/
+
+# 4. Binários e Ficheiros Pesados por Extensão (Segurança Redundante)
+*.joblib
+*.pkl
+*.parquet
+*.csv
+*.xlsx

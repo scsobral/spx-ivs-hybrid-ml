@@ -1,0 +1,34 @@
+{
+  "stage": "inner_refit",
+  "model_type": "RandomForestRegressor",
+  "features": [
+    "log_moneyness",
+    "T",
+    "option_is_call"
+  ],
+  "target": "residuo",
+  "n_obs": 5970843,
+  "params": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "criterion": "squared_error",
+    "max_depth": 12,
+    "max_features": 0.8,
+    "max_leaf_nodes": null,
+    "max_samples": 0.6,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 100,
+    "min_samples_split": 150,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 1200,
+    "n_jobs": -1,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "trained_at": "2025-10-24T15:52:29.400624+00:00Z",
+  "date_min": "2009-01-02 00:00:00",
+  "date_max": "2017-12-26 00:00:00"
+}

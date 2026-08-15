@@ -1,0 +1,34 @@
+{
+  "model_type": "RandomForestRegressor",
+  "features": [
+    "log_moneyness",
+    "T",
+    "option_is_call"
+  ],
+  "target": "iv_teorica",
+  "n_obs": 7505238,
+  "params": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "criterion": "squared_error",
+    "max_depth": 14,
+    "max_features": 0.8,
+    "max_leaf_nodes": null,
+    "max_samples": 0.6,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 50,
+    "min_samples_split": 200,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 500,
+    "n_jobs": -1,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "oob_score": null,
+  "trained_at": "2025-10-24T10:35:58.253917+00:00Z",
+  "date_min": "2009-01-02 00:00:00",
+  "date_max": "2018-09-21 00:00:00"
+}

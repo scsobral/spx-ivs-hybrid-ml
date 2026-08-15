@@ -1,0 +1,19 @@
+{
+  "model_type": "OLS (sklearn LinearRegression)",
+  "features": [
+    "log_moneyness",
+    "T"
+  ],
+  "target": "iv_teorica",
+  "fit_intercept": true,
+  "n_obs": 5970843,
+  "n_features": 2,
+  "intercept": 0.1942029515272031,
+  "coefs": {
+    "log_moneyness": -0.3481433913885617,
+    "T": -0.02132639723496974
+  },
+  "trained_at": "2025-10-24T00:17:58.803286Z",
+  "date_min": "2009-01-02 00:00:00",
+  "date_max": "2017-12-26 00:00:00"
+}
