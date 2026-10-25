@@ -26,6 +26,7 @@ Thumbs.db
 *.parquet
 *.csv
 *.mp4
+release_assets*/
 
 # 3. Data Folders (Raw CBOE / FRED Options and Interest Rates Data)
 02_data/raw/
