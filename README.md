@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Thesis Grade: 19/20](https://img.shields.io/badge/Thesis%20Grade-19%20%2F%2020%20(95%25)-gold.svg)](01_docs/)
+[![Thesis Grade: 19/20](https://img.shields.io/badge/Thesis%20Grade-19%20%2F%2020-gold.svg)](01_docs/)
 [![Institution: ISCTE-IUL](https://img.shields.io/badge/Institution-ISCTE--IUL-navy.svg)](https://www.iscte-iul.pt/)
 [![Pipeline Status](https://img.shields.io/badge/Pipeline-100%25%20Reproducible-success.svg)](tests/)
 
