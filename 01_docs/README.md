@@ -39,3 +39,4 @@ If you find the methodologies or findings useful for your research, please cite:
   type         = {Master's Thesis in Financial Mathematics}
 }
 ```
+

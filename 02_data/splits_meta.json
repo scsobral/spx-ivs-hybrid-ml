@@ -1,0 +1,41 @@
+{
+  "config": {},
+  "periodo_total": {
+    "min": "2009-01-02",
+    "max": "2019-04-30",
+    "n_total_rows": 8860820,
+    "n_total_days": 2577
+  },
+  "train_full": {
+    "inicio": "2009-01-02",
+    "fim": "2018-09-21",
+    "n_obs": 7505238,
+    "n_dias": 2427,
+    "pct_total": "84.70%"
+  },
+  "test_puro": {
+    "inicio": "2018-10-01",
+    "fim": "2019-04-30",
+    "n_obs": 1292514,
+    "n_dias": 142,
+    "pct_total": "14.59%"
+  },
+  "inner_train": {
+    "inicio": "2009-01-02",
+    "fim": "2017-12-26",
+    "n_obs": 5970843,
+    "n_dias": 2244,
+    "pct_total": "67.38%",
+    "pct_of_train_full": "79.56%"
+  },
+  "inner_tunning": {
+    "inicio": "2018-01-02",
+    "fim": "2018-09-21",
+    "n_obs": 1534395,
+    "n_dias": 183,
+    "pct_total": "17.32%",
+    "pct_of_train_full": "20.44%"
+  },
+  "embargo": {},
+  "paths": {}
+}
