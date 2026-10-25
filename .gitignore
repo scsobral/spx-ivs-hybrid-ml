@@ -1,20 +1,54 @@
-# 1. Ambientes Virtuais e Ficheiros de Sistema
+# ==============================================================================
+# SPX Implied Volatility Surface (IVS) - Machine Learning Thesis
+# Author: Sérgio da Cunha Sobral
+# .gitignore - Strict Git Exclusion Rules
+# ==============================================================================
+
+# 1. Python Environment & System Files
 venv_tese/
+env/
+venv/
+ENV/
 __pycache__/
+*.py[cod]
+*$py.class
 .ipynb_checkpoints/
 .vscode/
+.idea/
 .DS_Store
+Thumbs.db
 .tmp*
+*.tmp
 
-# 2. Camada de Dados (Bloqueio Total)
-02. Dados/
-
-# 3. Documentos (Exclusão total da pasta de suporte pessoal/tese)
-05. Documentos/
-
-# 4. Binários e Ficheiros Pesados por Extensão (Segurança Redundante)
+# 2. Large Data & Model Binaries (Redundant Multi-layer Protection)
 *.joblib
 *.pkl
 *.parquet
 *.csv
-*.xlsx
+*.mp4
+
+# 3. Data Folders (Raw CBOE / FRED Options and Interest Rates Data)
+02. Dados/
+02_data/raw/
+02_data/processed/
+02_data/*.parquet
+02_data/*.csv
+02_data/*.pkl
+!02_data/README.md
+
+# 4. Legacy Academic / Support Documents (Personal & University Templates)
+05. Documentos/
+*.docx
+*.pptx
+
+# 5. Outdated Runs, Intermediate Drafts & Old Files
+*00. Old*/
+*[OLD]*
+01. Notebooks/00. Configuração/00_Configurar_Estrutura.ipynb
+01. Notebooks/00. Configuração/01_contexto.txt
+03. Output/03. Excels/
+
+# 6. Allow Essential Table Outputs
+!04_outputs/02_tables/*.xlsx
+!04_outputs/02_tables/**/*.xlsx
+!03. Output/02. Tabelas/**/*.xlsx
