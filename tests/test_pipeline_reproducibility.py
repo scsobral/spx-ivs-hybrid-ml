@@ -141,7 +141,7 @@ class TestIVSPipelineReproducibility(unittest.TestCase):
         # Locate processed data
         cls.data_dir = os.path.join(BASE_DIR, "02_data", "processed")
         if not os.path.exists(cls.data_dir):
-            cls.data_dir = os.path.join(BASE_DIR, "02. Dados", "02. Dados Tratados")
+            cls.data_dir = os.path.join(BASE_DIR, "_legacy_pt", "02. Dados", "02. Dados Tratados")
 
         print("\n" + "=" * 70)
         print("  STARTING QUANTITATIVE PIPELINE REPRODUCIBILITY DRY-RUN")

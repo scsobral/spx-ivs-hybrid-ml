@@ -46,7 +46,8 @@ release_assets*/
 *[OLD]*
 03_notebooks/archive/
 
-# 6. Legacy Unstructured Project Directories (Kept Locally, Ignored in Git)
+# 6. Legacy Portuguese Architecture (Archived Locally, Ignored in Git)
+_legacy_pt/
 01. Notebooks/
 02. Dados/
 03. Output/
