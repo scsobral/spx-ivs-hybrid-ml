@@ -187,9 +187,9 @@ If you utilize this methodology, empirical findings, or code in academic or indu
 
 ```bibtex
 @mastersthesis{sobral2025ivs,
-  author       = {S{\'e}rgio da Cunha Sobral},
+  author       = {Sérgio da Cunha Sobral},
   title        = {Study of Implied Volatility Surface with Machine Learning Techniques},
-  school       = {ISCTE -- Instituto Universit{\'a}rio de Lisboa},
+  school       = {ISCTE – Instituto Universitário de Lisboa},
   year         = {2025},
   month        = {October},
   address      = {Lisbon, Portugal},

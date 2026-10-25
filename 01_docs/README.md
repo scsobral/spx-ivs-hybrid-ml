@@ -30,13 +30,14 @@ If you find the methodologies or findings useful for your research, please cite:
 
 ```bibtex
 @mastersthesis{sobral2025ivs,
-  author       = {S{\'e}rgio da Cunha Sobral},
+  author       = {Sérgio da Cunha Sobral},
   title        = {Study of Implied Volatility Surface with Machine Learning Techniques},
-  school       = {ISCTE - University Institute of Lisbon},
+  school       = {ISCTE – Instituto Universitário de Lisboa},
   year         = {2025},
   month        = {October},
   address      = {Lisbon, Portugal},
-  type         = {Master's Thesis in Financial Mathematics}
+  type         = {Master's Thesis in Financial Mathematics},
+  note         = {Supervised by Prof. Dr. Diana Aldea Mendes. Academic Grade: 19/20 (Distinction)}
 }
 ```
 
