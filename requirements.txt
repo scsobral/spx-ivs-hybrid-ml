@@ -1,0 +1,36 @@
+# ==============================================================================
+# SPX Implied Volatility Surface (IVS) - Machine Learning Framework
+# Master's Thesis | Sérgio da Cunha Sobral | ISCTE-IUL (Supervised by Profª. Drª. Diana Mendes)
+# Python Dependencies Specification
+# ==============================================================================
+
+# Core Scientific Computing & Data Processing
+numpy>=2.0.0,<2.4.0
+pandas>=2.2.0,<2.4.0
+scipy>=1.14.0,<1.16.0
+pyarrow>=18.0.0,<21.0.0
+
+# Financial Mathematics & Implied Volatility (Peter Jäckel's Let's Be Rational)
+py_lets_be_rational>=1.0.1
+py_vollib>=1.0.1
+
+# Machine Learning, Splines & Gradient Boosting
+scikit-learn>=1.5.0,<1.8.0
+xgboost>=2.1.0,<3.1.0
+joblib>=1.4.0,<1.6.0
+
+# Visualization & Quantitative Plotting
+matplotlib>=3.9.0,<3.11.0
+seaborn>=0.13.0,<0.14.0
+
+# Tabular Serialization & Reporting
+openpyxl>=3.1.0,<3.2.0
+
+# Interactive Notebook Environment & CLI Execution
+jupyter>=1.0.0
+jupyterlab>=4.2.0
+notebook>=7.2.0
+nbconvert>=7.16.0
+nbformat>=5.10.0
+ipykernel>=6.29.0
+tqdm>=4.66.0
