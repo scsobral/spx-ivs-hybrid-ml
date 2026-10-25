@@ -41,7 +41,7 @@ The repository adheres to a strict separation between raw data sources and clean
 2. **Federal Reserve Economic Data (FRED):**
    * **Series:** U.S. Constant Maturity Treasury (CMT) Yield Curves.
    * **Tenors:** 1-month (`DGS1MO`), 3-month (`DGS3MO`), 6-month (`DGS6MO`), 1-year (`DGS1`), 2-year (`DGS2`), 3-year (`DGS3`), 5-year (`DGS5`), 7-year (`DGS7`), 10-year (`DGS10`), 20-year (`DGS20`), 30-year (`DGS30`).
-   * **Methodology:** Daily yield curves are interpolated using cubic splines / piecewise linear interpolation to compute the exact continuous risk-free rate $r$ matching each option's time to expiration $T$.
+   * **Methodology:** Daily yield curves are interpolated using cubic splines and piecewise linear interpolation to compute the exact continuous risk-free rate `r` matching each option's time to expiration `T`.
 
 ---
 
@@ -50,14 +50,14 @@ The repository adheres to a strict separation between raw data sources and clean
 To ensure market microstructure robustness and prevent bias from numerical inversion artifacts, a rigorous multi-stage filtering protocol is applied:
 
 1. **Liquidity & Non-Zero Bid Filter:**  
-   Contracts with $\text{Bid} \le 0$ or non-positive spreads are discarded to eliminate quotes where no executable market exists.
-2. **Spread Consistency:**  
-   Contracts violating elementary arbitrage bounds ($\text{Bid} > \text{Ask}$ or $\text{Ask} - \text{Bid} > \tau$) are filtered out.
+   Contracts with `Bid <= 0` or non-positive spreads are discarded to eliminate quotes where no executable market exists.
+2. **Spread Consistency & Arbitrage Bounds:**  
+   Contracts violating elementary arbitrage bounds (`Bid > Ask` or negative spreads) are filtered out.
 3. **Maturity Horizons:**  
-   Options with extreme short maturities ($T < 7\text{ days}$, prone to expiration-week noise and jump risks) or ultra-long maturities ($T > 2.5\text{ years}$, illiquid) are restricted.
+   Options with extreme short maturities (`T < 7 days`, prone to expiration-week noise and jump risks) or ultra-long maturities (`T > 2.5 years`, illiquid) are excluded.
 4. **Theoretical IV Inversion & Bounds:**  
    Implied volatility is computed by inverting the Black-Scholes formula using the Newton-Raphson algorithm.  
-   Observations where the solver fails (NaN) or yields extreme non-economic values ($\text{IV} \le 0$ or $\text{IV} > 2.0$, i.e., annualized volatility $> 200\%$) are excluded. These predominantly affect deep out-of-the-money (OTM) options with negligible trading interest.
+   Observations where the solver fails (NaN) or yields extreme non-economic values (`IV <= 0` or `IV > 2.0`, corresponding to annualized volatility > 200%) are excluded. These predominantly affect deep out-of-the-money (OTM) options with negligible trading volume.
 5. **Final Modeling Universe:**  
    After all filtering criteria, the clean dataset comprises **8,860,820 high-quality contracts** across **2,577 trading days**.
 
@@ -67,16 +67,16 @@ To ensure market microstructure robustness and prevent bias from numerical inver
 
 | Variable Name | Symbol | Data Type | Units / Range | Description |
 | :--- | :---: | :---: | :---: | :--- |
-| `quote_date` | $t$ | `datetime64` | `YYYY-MM-DD` | Market observation date. |
-| `expiration_date` | $T_{\text{exp}}$ | `datetime64` | `YYYY-MM-DD` | Contract settlement / expiration date. |
-| `T` | $T$ | `float64` | $[7/365, 2.5]$ | Time to maturity in years: $(\text{expiration} - \text{quote}) / 365$. |
-| `underlying_price` | $S$ | `float64` | USD (\$) | S&P 500 Index mid price at 15:45 EST. |
-| `strike` | $K$ | `float64` | USD (\$) | Contract exercise strike price. |
-| `log_moneyness` | $m$ | `float64` | $[-1.5, +1.5]$ | Normalized moneyness: $m = \ln(K / S)$. |
-| `r` | $r$ | `float64` | $[0.0, 0.06]$ | Continuously compounded risk-free rate interpolated from CMT curve. |
-| `option_type` | $\mathbb{I}_{\text{Call}}$ | `int64` | $\{0, 1\}$ | Binary indicator: `1` for Call options, `0` for Put options. |
-| `IV` | $\sigma_{\text{implied}}$ | `float64` | $(0.0, 2.0]$ | **Target variable:** Black-Scholes implied volatility. |
-| `total_variance` | $w$ | `float64` | $> 0$ | Total implied variance: $w = \sigma_{\text{implied}}^2 \cdot T$. |
+| `quote_date` | `t` | `datetime64` | `YYYY-MM-DD` | Market observation date. |
+| `expiration_date` | `T_exp` | `datetime64` | `YYYY-MM-DD` | Contract settlement / expiration date. |
+| `T` | `T` | `float64` | `[7/365, 2.5]` | Time to maturity in years: `(expiration - quote) / 365`. |
+| `underlying_price` | `S` | `float64` | USD ($) | S&P 500 Index mid price at 15:45 EST. |
+| `strike` | `K` | `float64` | USD ($) | Contract exercise strike price. |
+| `log_moneyness` | `m` | `float64` | `[-1.5, +1.5]` | Normalized log-moneyness: `m = ln(K / S)`. |
+| `r` | `r` | `float64` | `[0.0, 0.06]` | Continuously compounded risk-free rate interpolated from CMT curve. |
+| `option_type` | `Call_Flag` | `int64` | `{0, 1}` | Binary indicator: `1` for Call options, `0` for Put options. |
+| `IV` | `IV` | `float64` | `(0.0, 2.0]` | **Target variable:** Black-Scholes implied volatility. |
+| `total_variance` | `w` | `float64` | `> 0` | Total implied variance: `w = IV^2 * T`. |
 
 ---
 
