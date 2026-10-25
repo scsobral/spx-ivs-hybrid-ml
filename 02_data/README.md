@@ -64,21 +64,24 @@ To ensure market microstructure robustness and prevent bias from numerical inver
 
 ## 4. Variable Dictionary (Dataset Schema)
 
-The final modeling dataset contains 11 features capturing option terms, underlying market state, and the target implied volatility. Below is the exact schema from the processed Parquet files:
+The final modeling dataset contains 11 variables capturing contract terms, underlying market state, and target volatility:
 
-| Column Name      | Math Symbol | Data Type | Sample Value | Description |
-| :--------------- | :---------: | :-------: | :----------: | :---------------------------------------------------------- |
-| `quote_date`     | t           | date      | 2018-10-01   | Market quote date (YYYY-MM-DD)                              |
-| `expiration`     | T_exp       | date      | 2018-12-21   | Option contract expiration date                             |
-| `T`              | T           | float     | 0.2219       | Time to maturity in years: (expiration - quote_date) / 365  |
-| `S`              | S           | float     | 2918.58      | Underlying S&P 500 spot mid price at 15:45 EST (USD)        |
-| `K`              | K           | float     | 3065.00      | Option contract strike price (USD)                          |
-| `option_price`   | P           | float     | 148.80       | Option contract mid price: (Bid + Ask) / 2 (USD)            |
-| `moneyness`      | K / S       | float     | 1.0502       | Simple moneyness ratio                                      |
-| `log_moneyness`  | m           | float     | 0.0490       | Normalized log-moneyness: ln(K / S)                         |
-| `risk_free_rate` | r           | float     | 0.0221       | Annualized continuous risk-free rate from FRED CMT curve    |
-| `option_is_call` | I_call      | integer   | 0            | Binary option type flag: 1 = Call, 0 = Put                  |
-| `iv_teorica`     | sigma_IV    | float     | 0.1110       | **Target Variable:** Black-Scholes theoretical implied vol  |
+| Column Name      | Role in Models    | Data Type | Sample Value | Description |
+| :--------------- | :---------------: | :-------: | :----------: | :---------------------------------------------------------- |
+| `quote_date`     | Timestamp         | date      | 2018-10-01   | Market quote observation date (YYYY-MM-DD)                  |
+| `expiration`     | Timestamp         | date      | 2018-12-21   | Option contract settlement / expiration date                |
+| `T`              | **Core Feature**  | float     | 0.2219       | Time to maturity in years: (expiration - quote_date) / 365  |
+| `S`              | Market State      | float     | 2918.58      | Underlying S&P 500 spot mid price at 15:45 EST (USD)        |
+| `K`              | Contract Term     | float     | 3065.00      | Option contract strike price (USD)                          |
+| `option_price`   | Market State      | float     | 148.80       | Option contract mid price: (Bid + Ask) / 2 (USD)            |
+| `moneyness`      | Reference Ratio   | float     | 1.0502       | Simple strike-to-spot ratio: K / S                          |
+| `log_moneyness`  | **Core Feature**  | float     | 0.0490       | Normalized log-moneyness: m = ln(K / S)                     |
+| `risk_free_rate` | Exogenous State   | float     | 0.0221       | Annualized continuous risk-free rate from FRED CMT curve    |
+| `option_is_call` | **ML Feature**    | integer   | 0            | Binary option type indicator: 1 = Call, 0 = Put             |
+| `iv_teorica`     | **Target (y)**    | float     | 0.1110       | **Target Variable:** Black-Scholes implied volatility (IV)  |
+
+* **Classical Models (OLS, Polynomial, Splines):** Predict `iv_teorica` using `(log_moneyness, T)`.
+* **Machine Learning & Hybrid Models (RF, XGBoost):** Predict `iv_teorica` using `(log_moneyness, T, option_is_call)`.
 
 ---
 
