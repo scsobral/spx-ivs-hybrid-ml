@@ -10,7 +10,7 @@
 > **Author:** Sérgio da Cunha Sobral ([GitHub](https://github.com/scsobral))  
 > **Supervisor:** Profª. Drª. Diana Aldea Mendes  
 > **Institution:** ISCTE – Instituto Universitário de Lisboa (Business School & School of Technology and Architecture)  
-> **Academic Grade:** **19 / 20** (Defense: November 2024)
+> **Academic Grade:** **19 / 20** (Distinction, 2025)
 
 ---
 
@@ -18,16 +18,11 @@
 
 The seminal Black-Scholes-Merton (1973) framework operates under the assumption of geometric Brownian motion with constant volatility $\sigma$. In empirical financial markets, this assumption fails systematically: option market prices inverted through the Black-Scholes formula exhibit the **Implied Volatility Surface (IVS)** $\sigma_{\text{implied}}(K, T)$, characterized by persistent negative skewness ("volatility smile/skew") and term structure variation.
 
-```
-       Implied Volatility σ(K, T)
-                ▲
-                │        /───────\   (Out-of-the-money puts / crash hedging)
-                │       /         \
-                │      /           \
-                │     /             \────── (At-the-money)
-                │    /                       \────── (Out-of-the-money calls)
-                └─────────────────────────────────────► Strike K / Moneyness m
-```
+<p align="center">
+  <img src="04_outputs/01_figures/06_model_splines/Splines_iv_surface.png" alt="Empirical S&P 500 Implied Volatility Surface" width="85%" />
+  <br>
+  <em>Figure: Empirical S&P 500 Implied Volatility Surface $\sigma(K, T)$ reconstructed via Tensor-Product Cubic B-Splines ($B_m \otimes B_T$), illustrating the steep crash-hedging put skew and term structure dynamics across maturities.</em>
+</p>
 
 ### The Modeling Dilemma
 1. **Classical Parametric / Smoothing Models (OLS, Polynomials, B-Splines):** Offer global regularity and smoothness, but lack capacity to capture localized microstructural pricing anomalies, jump risks, and contract-specific liquidity skews.
@@ -187,15 +182,15 @@ Due to GitHub file size constraints, serialized `.joblib` model binaries are hos
 If you utilize this methodology, empirical findings, or code in academic or industrial research, please cite:
 
 ```bibtex
-@mastersthesis{sobral2024ivs,
+@mastersthesis{sobral2025ivs,
   author       = {S{\'e}rgio da Cunha Sobral},
   title        = {Study of Implied Volatility Surface with Machine Learning Techniques},
   school       = {ISCTE -- Instituto Universit{\'a}rio de Lisboa},
-  year         = {2024},
-  month        = {November},
+  year         = {2025},
+  month        = {October},
   address      = {Lisbon, Portugal},
-  type         = {Master's Thesis},
-  note         = {Supervised by Prof. Dr. Diana Aldea Mendes. Academic Grade: 19/20}
+  type         = {Master's Thesis in Financial Mathematics},
+  note         = {Supervised by Prof. Dr. Diana Aldea Mendes. Academic Grade: 19/20 (Distinction)}
 }
 ```
 
@@ -204,3 +199,4 @@ If you utilize this methodology, empirical findings, or code in academic or indu
 ## 8. License
 
 This repository is licensed under the [MIT License](LICENSE).
+
