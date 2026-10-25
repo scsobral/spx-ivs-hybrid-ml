@@ -63,20 +63,23 @@ To ensure market microstructure robustness and prevent bias from numerical inver
 
 ---
 
-## 4. Variable Dictionary
+## 4. Variable Dictionary (Dataset Schema)
 
-| Variable Name | Symbol | Data Type | Units / Range | Description |
-| :--- | :---: | :---: | :---: | :--- |
-| `quote_date` | `t` | `datetime64` | `YYYY-MM-DD` | Market observation date. |
-| `expiration_date` | `T_exp` | `datetime64` | `YYYY-MM-DD` | Contract settlement / expiration date. |
-| `T` | `T` | `float64` | `[7/365, 2.5]` | Time to maturity in years: `(expiration - quote) / 365`. |
-| `underlying_price` | `S` | `float64` | USD ($) | S&P 500 Index mid price at 15:45 EST. |
-| `strike` | `K` | `float64` | USD ($) | Contract exercise strike price. |
-| `log_moneyness` | `m` | `float64` | `[-1.5, +1.5]` | Normalized log-moneyness: `m = ln(K / S)`. |
-| `r` | `r` | `float64` | `[0.0, 0.06]` | Continuously compounded risk-free rate interpolated from CMT curve. |
-| `option_type` | `Call_Flag` | `int64` | `{0, 1}` | Binary indicator: `1` for Call options, `0` for Put options. |
-| `IV` | `IV` | `float64` | `(0.0, 2.0]` | **Target variable:** Black-Scholes implied volatility. |
-| `total_variance` | `w` | `float64` | `> 0` | Total implied variance: `w = IV^2 * T`. |
+The final modeling dataset contains 11 features capturing option terms, underlying market state, and the target implied volatility. Below is the exact schema from the processed Parquet files:
+
+| Column Name      | Math Symbol | Data Type | Sample Value | Description |
+| :--------------- | :---------: | :-------: | :----------: | :---------------------------------------------------------- |
+| `quote_date`     | t           | date      | 2018-10-01   | Market quote date (YYYY-MM-DD)                              |
+| `expiration`     | T_exp       | date      | 2018-12-21   | Option contract expiration date                             |
+| `T`              | T           | float     | 0.2219       | Time to maturity in years: (expiration - quote_date) / 365  |
+| `S`              | S           | float     | 2918.58      | Underlying S&P 500 spot mid price at 15:45 EST (USD)        |
+| `K`              | K           | float     | 3065.00      | Option contract strike price (USD)                          |
+| `option_price`   | P           | float     | 148.80       | Option contract mid price: (Bid + Ask) / 2 (USD)            |
+| `moneyness`      | K / S       | float     | 1.0502       | Simple moneyness ratio                                      |
+| `log_moneyness`  | m           | float     | 0.0490       | Normalized log-moneyness: ln(K / S)                         |
+| `risk_free_rate` | r           | float     | 0.0221       | Annualized continuous risk-free rate from FRED CMT curve    |
+| `option_is_call` | I_call      | integer   | 0            | Binary option type flag: 1 = Call, 0 = Put                  |
+| `iv_teorica`     | sigma_IV    | float     | 0.1110       | **Target Variable:** Black-Scholes theoretical implied vol  |
 
 ---
 
