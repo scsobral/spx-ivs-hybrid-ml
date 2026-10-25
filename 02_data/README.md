@@ -130,3 +130,4 @@ The processed datasets are produced deterministically through the following sequ
    Parses FRED Treasury yields and constructs continuous risk-free rate curves matching option tenors (`df_IR.parquet`).
 4. **`03_notebooks/02_features_universe/01_modeling_universe_splits.ipynb`:**  
    Merges options with interest rates, computes theoretical implied volatility via Newton-Raphson, filters numerical outliers, enforces the chronological splits with embargo gaps, and exports the final modeling datasets (`df_train_full`, `df_inner_train`, `df_inner_tunning`, `df_test_puro`, and `splits_meta.json`).
+

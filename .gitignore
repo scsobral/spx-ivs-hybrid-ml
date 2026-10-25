@@ -28,27 +28,30 @@ Thumbs.db
 *.mp4
 
 # 3. Data Folders (Raw CBOE / FRED Options and Interest Rates Data)
-02. Dados/
 02_data/raw/
 02_data/processed/
 02_data/*.parquet
 02_data/*.csv
 02_data/*.pkl
 !02_data/README.md
+!02_data/splits_meta.json
 
 # 4. Legacy Academic / Support Documents (Personal & University Templates)
-05. Documentos/
 *.docx
 *.pptx
 
 # 5. Outdated Runs, Intermediate Drafts & Old Files
 *00. Old*/
 *[OLD]*
-01. Notebooks/00. Configuração/00_Configurar_Estrutura.ipynb
-01. Notebooks/00. Configuração/01_contexto.txt
-03. Output/03. Excels/
+03_notebooks/archive/
 
-# 6. Allow Essential Table Outputs
+# 6. Legacy Unstructured Project Directories (Kept Locally, Ignored in Git)
+01. Notebooks/
+02. Dados/
+03. Output/
+04. Resultados/
+05. Documentos/
+
+# 7. Allow Essential Table Outputs
 !04_outputs/02_tables/*.xlsx
 !04_outputs/02_tables/**/*.xlsx
-!03. Output/02. Tabelas/**/*.xlsx
