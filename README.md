@@ -16,12 +16,12 @@
 
 ## 1. Executive Summary & Problem Formulation
 
-The seminal Black-Scholes-Merton (1973) framework operates under the assumption of geometric Brownian motion with constant volatility $\sigma$. In empirical financial markets, this assumption fails systematically: option market prices inverted through the Black-Scholes formula exhibit the **Implied Volatility Surface (IVS)** $\sigma_{\text{implied}}(K, T)$, characterized by persistent negative skewness ("volatility smile/skew") and term structure variation.
+The seminal Black-Scholes-Merton (1973) framework operates under the assumption of geometric Brownian motion with constant volatility. In empirical financial markets, this assumption fails systematically: option market prices inverted through the Black-Scholes formula exhibit the **Implied Volatility Surface (IVS)**, denoted as `IV(K, T)`, characterized by persistent negative skewness ("volatility smile/skew") and term structure variation.
 
 <p align="center">
   <img src="04_outputs/01_figures/06_model_splines/Splines_iv_surface.png" alt="Empirical S&P 500 Implied Volatility Surface" width="85%" />
   <br>
-  <em>Figure: Empirical S&P 500 Implied Volatility Surface $\sigma(K, T)$ reconstructed via Tensor-Product Cubic B-Splines ($B_m \otimes B_T$), illustrating the steep crash-hedging put skew and term structure dynamics across maturities.</em>
+  <em>Figure: Empirical S&P 500 Implied Volatility Surface reconstructed via Tensor-Product Cubic B-Splines (B_m ⊗ B_T), illustrating the steep crash-hedging put skew and term structure dynamics across maturities.</em>
 </p>
 
 ### The Modeling Dilemma
@@ -29,9 +29,13 @@ The seminal Black-Scholes-Merton (1973) framework operates under the assumption 
 2. **Pure Machine Learning Ensembles (Random Forests, Gradient Boosting):** High non-linear expressive power, but vulnerable to overfitting, step-like discontinuous artifacts, and poor extrapolation in sparse wing regimes (deep OTM / ITM).
 3. **The Proposed Solution (Semiparametric Hybrid Framework):**  
    We decompose the implied volatility surface into an orthogonal two-stage formulation:
-   $$\sigma(k, T, \mathbf{1}_{\text{call}}) = \hat{\sigma}_{\text{macro}}(k, T) + \hat{\epsilon}_{\text{micro}}(k, T, \mathbf{1}_{\text{call}})$$
-   * **Stage 1 (Macro Manifold):** A smooth, regularized 2D **Tensor-Product Cubic B-Spline** ($B_m \otimes B_T$) establishes the fundamental economic geometry across log-moneyness and time-to-maturity.
-   * **Stage 2 (Microstructure Residuals):** **Random Forests** or **XGBoost** model the pricing residuals $\epsilon = \sigma - \hat{\sigma}_{\text{macro}}$, incorporating the contract flag $\mathbf{1}_{\text{call}}$ to capture put-call parity deviations, borrow costs, and liquidity asymmetries.
+
+   ```
+   IV(k, T, option_is_call) = IV_macro(k, T) + Residual_micro(k, T, option_is_call)
+   ```
+
+   * **Stage 1 (Macro Manifold):** A smooth, regularized 2D **Tensor-Product Cubic B-Spline** (`B_m ⊗ B_T`) establishes the fundamental economic geometry across log-moneyness `k` and time-to-maturity `T`.
+   * **Stage 2 (Microstructure Residuals):** **Random Forests** or **XGBoost** model the pricing residuals `e = IV - IV_macro`, incorporating the contract flag `option_is_call` to capture put-call parity deviations, borrow costs, and liquidity asymmetries.
 
 ---
 
@@ -40,7 +44,7 @@ The seminal Black-Scholes-Merton (1973) framework operates under the assumption 
 The empirical study spans **10 full years** of high-frequency option records from the Chicago Board Options Exchange (CBOE) on the S&P 500 Index (SPX), matched against daily zero-coupon risk-free curves derived from Federal Reserve (FRED) data.
 
 * **Gross Historical Span:** January 2, 2009 to April 30, 2019 (2,569 trading days).
-* **Arbitrage & Liquidity Filters:** Non-positive bids, quotes violating static no-arbitrage bounds, and extreme short-term ($T < 7\text{ days}$) or long-term ($T > 2.5\text{ years}$) maturities were purged.
+* **Arbitrage & Liquidity Filters:** Non-positive bids, quotes violating static no-arbitrage bounds, and extreme short-term (`T < 7 days`) or long-term (`T > 2.5 years`) maturities were purged.
 * **Final Curated Universe:** **8,862,390 clean option contracts**.
 
 ### Out-of-Sample Chronological Partition with Embargo
@@ -77,13 +81,13 @@ Seven distinct mathematical and algorithmic models were implemented, tuned, and 
 
 | # | Model | Family | Input Features | Key Specification |
 | :-: | :--- | :--- | :--- | :--- |
-| **1** | **OLS Linear** | Classical Parametric | $[\ln(S/K), T]$ | $y = \beta_0 + \beta_1 \ln(S/K) + \beta_2 T$ |
-| **2** | **Polynomial (Degree 5)** | Classical Parametric | $[\ln(S/K), T]$ | Complete 5th-degree bivariate polynomial with $z$-score scaling |
-| **3** | **Cubic B-Splines** | Nonparametric Regularized | $[\ln(S/K), T]$ | Tensor-product $B_m \otimes B_T$ with RidgeCV knot regularization |
-| **4** | **Random Forest** | Ensemble Tree-Based | $[\ln(S/K), T, \mathbf{1}_{\text{call}}]$ | 100 trees, balanced subsampling across moneyness/maturity bins |
-| **5** | **XGBoost** | Gradient Boosted Trees | $[\ln(S/K), T, \mathbf{1}_{\text{call}}]$ | Hist gradient boosting with shrinkage and depth regularizers |
-| **6** | **Hybrid Splines + RF** | **Semiparametric Hybrid** | $[m, T] \oplus [m, T, \mathbf{1}_{\text{call}}]$ | Spline base surface + Random Forest residual learner |
-| **7** | **Hybrid Splines + XGB** | **Semiparametric Hybrid** | $[m, T] \oplus [m, T, \mathbf{1}_{\text{call}}]$ | Spline base surface + XGBoost residual learner |
+| **1** | **OLS Linear** | Classical Parametric | `[ln(S/K), T]` | Baseline linear: `y = β0 + β1·ln(S/K) + β2·T` |
+| **2** | **Polynomial (Degree 5)** | Classical Parametric | `[ln(S/K), T]` | Complete 5th-degree bivariate polynomial with z-score scaling |
+| **3** | **Cubic B-Splines** | Nonparametric Regularized | `[ln(S/K), T]` | Tensor-product `B_m ⊗ B_T` with RidgeCV knot regularization |
+| **4** | **Random Forest** | Ensemble Tree-Based | `[ln(S/K), T, option_is_call]` | 100 trees, balanced subsampling across moneyness/maturity bins |
+| **5** | **XGBoost** | Gradient Boosted Trees | `[ln(S/K), T, option_is_call]` | Hist gradient boosting with shrinkage and depth regularizers |
+| **6** | **Hybrid Splines + RF** | **Semiparametric Hybrid** | `[m, T] + [m, T, option_is_call]` | Spline base surface + Random Forest residual learner |
+| **7** | **Hybrid Splines + XGB** | **Semiparametric Hybrid** | `[m, T] + [m, T, option_is_call]` | Spline base surface + XGBoost residual learner |
 
 ---
 
@@ -91,7 +95,7 @@ Seven distinct mathematical and algorithmic models were implemented, tuned, and 
 
 Evaluation on the **1,292,514 untouched test contracts** (October 2018 to April 2019):
 
-| Model Architecture | Type | Test RMSE | Test MAE | Test MedAE | Test $R^2$ | RMSE Reduction vs OLS |
+| Model Architecture | Type | Test RMSE | Test MAE | Test MedAE | Test R² | RMSE Reduction vs OLS |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
 | **OLS Linear** | Linear Baseline | 0.0892 | 0.0571 | 0.0392 | 41.39% | — |
 | **5th-Degree Polynomial** | Parametric | 0.0594 | 0.0420 | 0.0326 | 74.01% | **-33.4%** |
@@ -102,9 +106,9 @@ Evaluation on the **1,292,514 untouched test contracts** (October 2018 to April 
 | **Hybrid Splines + Random Forest** | **Semiparametric** | **0.0383** | **0.0275** | **0.0192** | **89.18%** | **-57.1%** |
 
 ### Key Quantitative Findings:
-1. **Hybrid Superiority:** The **Hybrid Splines + Random Forest** achieves the top performance ($R^2 = 89.18\%$, $\text{RMSE} = 0.0383$), cutting the baseline pricing error by more than half (**57.1% error reduction**).
+1. **Hybrid Superiority:** The **Hybrid Splines + Random Forest** achieves the top performance (`R² = 89.18%`, `RMSE = 0.0383`), cutting the baseline pricing error by more than half (**57.1% error reduction**).
 2. **Economic Regularity vs Microstructure:** The B-Splines baseline acts as an inductive bias, preventing tree models from creating nonsensical cliffs or step artifacts in sparse wing regions.
-3. **Contract Asymmetry ($\mathbf{1}_{\text{call}}$):** Incorporating the call/put indicator accounts for empirical put-call parity violations caused by stock lending fees, differential short-selling costs, and downside hedging demand.
+3. **Contract Asymmetry (`option_is_call`):** Incorporating the call/put indicator accounts for empirical put-call parity violations caused by stock lending fees, differential short-selling costs, and downside hedging demand.
 
 ---
 

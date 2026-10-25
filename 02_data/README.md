@@ -125,7 +125,7 @@ The processed datasets are produced deterministically through the following sequ
 1. **`03_notebooks/01_exploration/01_data_loading.ipynb`:**  
    Ingests daily CBOE CSV files, validates initial schemas, and consolidates raw option records into indexed Parquet format.
 2. **`03_notebooks/01_exploration/02_data_cleaning_filtering.ipynb`:**  
-   Applies microstructure bid-ask filters, computes moneyness $m$ and maturity $T$, and removes non-executable quotes.
+   Applies microstructure bid-ask filters, computes moneyness m and maturity T, and removes non-executable quotes.
 3. **`03_notebooks/01_exploration/04_interest_rates_curves.ipynb`:**  
    Parses FRED Treasury yields and constructs continuous risk-free rate curves matching option tenors (`df_IR.parquet`).
 4. **`03_notebooks/02_features_universe/01_modeling_universe_splits.ipynb`:**  
