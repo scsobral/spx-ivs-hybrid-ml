@@ -1,12 +1,12 @@
 # Data Layer & Methodology Guide
 
-This document describes the data architecture, primary sources, quantitative filtering criteria, variable dictionary, and train/test temporal split design used in this thesis.
+This document describes the data architecture, primary sources, quantitative filtering criteria, variable dictionary, train/test temporal split design, and dataset generation pipeline used in this thesis.
 
 ---
 
 ## 1. Directory Layout & Pipeline Flow
 
-The repository adheres to a strict separation between raw data sources and clean, processed modeling datasets.
+The repository adheres to a strict separation between raw data sources and clean, processed modeling datasets:
 
 ```
 02_data/
@@ -56,8 +56,7 @@ To ensure market microstructure robustness and prevent bias from numerical inver
 3. **Maturity Horizons:**  
    Options with extreme short maturities (`T < 7 days`, prone to expiration-week noise and jump risks) or ultra-long maturities (`T > 2.5 years`, illiquid) are excluded.
 4. **Theoretical IV Inversion & Bounds:**  
-   Implied volatility is computed by inverting the Black-Scholes formula using the Newton-Raphson algorithm.  
-   Observations where the solver fails (NaN) or yields extreme non-economic values (`IV <= 0` or `IV > 2.0`, corresponding to annualized volatility > 200%) are excluded. These predominantly affect deep out-of-the-money (OTM) options with negligible trading volume.
+   Implied volatility is computed by inverting the Black-Scholes formula using the Newton-Raphson algorithm. Observations where the solver fails (NaN) or yields extreme non-economic values (`IV <= 0` or `IV > 2.0`, corresponding to annualized volatility > 200%) are excluded. These predominantly affect deep out-of-the-money (OTM) options with negligible trading volume.
 5. **Final Modeling Universe:**  
    After all filtering criteria, the clean dataset comprises **8,860,820 high-quality contracts** across **2,577 trading days**.
 
@@ -104,12 +103,27 @@ flowchart LR
 
 ### Split Statistics Breakdown (`splits_meta.json`)
 
-| Dataset Partition | Start Date | End Date | Trading Days | Observation Count | Share of Total | Purpose |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **`inner_train`** | 2009-01-02 | 2017-12-26 | 2,244 | 5,970,843 | 67.38% | Primary model estimation and parameter calibration. |
-| *Inner Embargo* | 2017-12-27 | 2018-01-01 | 3 | — | — | Purge overlap between inner train and inner tuning. |
-| **`inner_tunning`** | 2018-01-02 | 2018-09-21 | 183 | 1,534,395 | 17.32% | Hyperparameter optimization (Grid/Random Search). |
-| **`train_full`** | 2009-01-02 | 2018-09-21 | 2,427 | 7,505,238 | 84.70% | Final retraining of selected optimal models. |
-| *Test Embargo* | 2018-09-22 | 2018-09-30 | 5 | — | — | Purge overlap before out-of-sample evaluation. |
-| **`test_puro`** | 2018-10-01 | 2019-04-30 | 142 | 1,292,514 | 14.59% | **Strict out-of-sample generalization benchmark.** |
-| **Total Universe** | **2009-01-02** | **2019-04-30** | **2,577** | **8,860,820** | **100.00%** | Comprehensive SPX options dataset. |
+| Dataset Partition  | Start Date | End Date   | Trading Days | Observation Count | Share of Total | Purpose |
+| :----------------- | :--------: | :--------: | :----------: | :---------------: | :------------: | :-------------------------------------------------- |
+| **`inner_train`**   | 2009-01-02 | 2017-12-26 | 2,244        | 5,970,843         | 67.38%         | Primary model estimation and parameter calibration. |
+| *Inner Embargo*    | 2017-12-27 | 2018-01-01 | 3            | —                 | —              | Purge overlap between inner train and inner tuning. |
+| **`inner_tunning`** | 2018-01-02 | 2018-09-21 | 183          | 1,534,395         | 17.32%         | Hyperparameter optimization (Grid/Random Search).   |
+| **`train_full`**    | 2009-01-02 | 2018-09-21 | 2,427        | 7,505,238         | 84.70%         | Final retraining of selected optimal models.        |
+| *Test Embargo*     | 2018-09-22 | 2018-09-30 | 5            | —                 | —              | Purge overlap before out-of-sample evaluation.      |
+| **`test_puro`**     | 2018-10-01 | 2019-04-30 | 142          | 1,292,514         | 14.59%         | **Strict out-of-sample generalization benchmark.**  |
+| **Total Universe**  | 2009-01-02 | 2019-04-30 | 2,577        | 8,860,820         | 100.00%        | Comprehensive SPX options dataset.                  |
+
+---
+
+## 6. Preprocessing & Generation Flow
+
+The processed datasets are produced deterministically through the following sequence of notebooks:
+
+1. **`03_notebooks/01_exploration/01_data_loading.ipynb`:**  
+   Ingests daily CBOE CSV files, validates initial schemas, and consolidates raw option records into indexed Parquet format.
+2. **`03_notebooks/01_exploration/02_data_cleaning_filtering.ipynb`:**  
+   Applies microstructure bid-ask filters, computes moneyness $m$ and maturity $T$, and removes non-executable quotes.
+3. **`03_notebooks/01_exploration/04_interest_rates_curves.ipynb`:**  
+   Parses FRED Treasury yields and constructs continuous risk-free rate curves matching option tenors (`df_IR.parquet`).
+4. **`03_notebooks/02_features_universe/01_modeling_universe_splits.ipynb`:**  
+   Merges options with interest rates, computes theoretical implied volatility via Newton-Raphson, filters numerical outliers, enforces the chronological splits with embargo gaps, and exports the final modeling datasets (`df_train_full`, `df_inner_train`, `df_inner_tunning`, `df_test_puro`, and `splits_meta.json`).
