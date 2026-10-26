@@ -72,16 +72,16 @@ def mostrar_estilos(estilos):
 
 # Display swatches in output
 if __name__ == '__main__':
-    print('Palete de Cores:')
+    print('Color Palette:')
     for nome, cor in CORES.items():
         print(f"{nome}: {cor}")
     
-    print('\nEstilos de Linha:')
+    print('\nLine Styles:')
     for nome, estilo in ESTILOS_LINHA.items():
         print(f"{nome}: {estilo}")
     
-    # mostrar_cores(PALETA_CORES)
-    # mostrar_estilos(ESTILOS_LINHA)
+    # show_colors(COLOR_PALETTE)
+    # show_line_styles(LINE_STYLES)
 # English compatibility aliases
 COLORS = CORES
 COLOR_PALETTE = PALETA_CORES
@@ -112,13 +112,13 @@ def plot_ivs_and_variance_surfaces(
     return_figs=False          # se True, retorna dict com as figuras (sem grids)
 ):
     """
-    Gera 4 gráficos:
+    Generates 4 figures:
       1) Heatmap IV (%)
-      2) Superfície 3D IV (%)
+      2) 3D IV Surface (%)
       3) Heatmap Variância Total w
-      4) Superfície 3D Variância Total w
+      4) 3D Total Variance Surface w
 
-    Não retorna grids/arrays. Opcionalmente retorna apenas as figuras.
+    Does not return grids/arrays. Optionally returns only figure objects.
     """
     import numpy as np, pandas as pd, os
     import matplotlib.pyplot as plt
@@ -268,7 +268,7 @@ def run_avaliacoes(
     n_bins_line: int = 20,                # bins (quantis) para a linha média nos gráficos vs m/T
     dpi: int = 160,
     scatter_mode: str = "all",            # "all" | "subsample" | "hexbin"
-    max_points_scatter: int | None = None,# apenas se scatter_mode="subsample"
+    max_points_scatter: int | None = None,# only if scatter_mode="subsample"
     random_state: int = 42,
     display_in_notebook: bool = True      # mostra tabela globais e plt.show() dos gráficos
 ) -> dict:
@@ -279,7 +279,7 @@ def run_avaliacoes(
         'Analise BIN | RMSE', '... | MAE', '... | MedAE', '... | Bias', '... | Count'
 
     Requisitos por DataFrame: colunas ['iv_teorica','ivs_modelo','log_moneyness','T'] sem NaN/Inf.
-    As cores usadas são as constantes COLOR_AZUL1/2/3, COLOR_CINZA1/2/3, COLOR_PRETO, COLOR_BRANCO.
+    Palette colors used: COLOR_AZUL1/2/3, COLOR_CINZA1/2/3, COLOR_PRETO, COLOR_BRANCO.
     """
     # ----------------- imports locais -----------------
     import os, math
@@ -304,7 +304,7 @@ def run_avaliacoes(
     def _fail_fast(df, split):
         miss = [c for c in REQUIRED_COLS if c not in df.columns]
         if miss:
-            raise ValueError(f"[{split}] Faltam colunas: {miss}")
+            raise ValueError(f"[{split}] Missing columns: {miss}")
         arr = df[REQUIRED_COLS].to_numpy()
         if not np.isfinite(arr).all():
             raise ValueError(f"[{split}] Existem NaN/Inf nas colunas obrigatórias.")
@@ -355,7 +355,7 @@ def run_avaliacoes(
         "hexbin_map", [COLOR_BRANCO, COLOR_AZUL2, COLOR_AZUL3]
     )
 
-    # ----------------- gráficos com CORES -----------------
+    # ----------------- Visualizations with Color Palette -----------------
     def _plot_scatter(df, save_path, title=None, show=False):
         d = _maybe_subsample(df)
         plt.figure(figsize=(6.5, 6.5))
