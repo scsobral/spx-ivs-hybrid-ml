@@ -29,14 +29,14 @@ PALETA_CORES = [COLOR_AZUL1, COLOR_AZUL2, COLOR_AZUL3, COLOR_CINZA1, COLOR_CINZA
 
 # Named dictionary of line styles
 ESTILOS_LINHA = {
-    'contínua': '-',
-    'tracejada': '--',
+    'solid': '-',
+    'dashed': '--',
     'ponto-traço': '-.',
-    'pontilhada': ':',
-    'contínua2': '-',
-    'tracejada2': '--',
+    'dotted': ':',
+    'solid2': '-',
+    'dashed2': '--',
     'ponto-traço2': '-.',
-    'pontilhada2': ':'
+    'dotted2': ':'
 }
 
 # List of styles for compatibility (opcional)
@@ -67,7 +67,7 @@ def mostrar_estilos(estilos):
     ax.set_xlim(0, len(estilos))
     ax.set_ylim(0, 1)
     ax.axis('off')
-    plt.title('Estilos de Linha')
+    plt.title('Line Styles')
     plt.show()
 
 # Display swatches in output
@@ -130,14 +130,14 @@ def plot_ivs_and_variance_surfaces(
         d["_z"] = z_series.values
         d = d.dropna()
         if d.empty:
-            raise ValueError("Sem dados válidos para visualizar.")
+            raise ValueError("No valid data available to plot.")
 
         # trims
         qx0, qx1 = d[x_col].quantile(list(qx))
         qy0, qy1 = d[y_col].quantile(list(qy))
         d = d[d[x_col].between(qx0, qx1) & d[y_col].between(max(0.0, qy0), qy1)]
         if d.empty:
-            raise ValueError("Sem dados após trims.")
+            raise ValueError("No records remaining after trim operations.")
 
         # bins
         x_bins = np.linspace(float(qx0), float(qx1), nbx + 1)
@@ -175,7 +175,7 @@ def plot_ivs_and_variance_surfaces(
     # --- prepare IV (%) and total variance w ---
     _df = df[[x_col, y_col, z_col]].dropna().copy()
     if _df.empty:
-        raise ValueError("Sem dados para visualização.")
+        raise ValueError("No data available for visualization.")
 
     iv_dec = _df[z_col].astype(float).clip(lower=0)  # robustez mínima
     w = (iv_dec ** 2) * _df[y_col].astype(float)
@@ -251,7 +251,7 @@ def plot_ivs_and_variance_surfaces(
             "fig_w_heatmap":  fig_w_hm,
             "fig_w_surface":  fig_w_3d,
         }
-    # por defeito, não retorna nada → não “sujamos” o output
+    # returns None by default to keep console output clean
 
 
 def run_avaliacoes(
@@ -274,8 +274,8 @@ def run_avaliacoes(
 ) -> dict:
     """
     Executa 4 runs fixos (1 geral + 3 específicas), gera PNGs e atualiza um Excel único por modelo:
-      - 'globais' com métricas por run
-      - Sheets 5x5 por métrica (apenas para a run geral de 'test_puro'):
+      - 'globais' with metrics per evaluation run
+      - 5x5 bin matrices per metric (for overall 'test_puro' run):
         'Analise BIN | RMSE', '... | MAE', '... | MedAE', '... | Bias', '... | Count'
 
     Requisitos por DataFrame: colunas ['iv_teorica','ivs_modelo','log_moneyness','T'] sem NaN/Inf.
@@ -292,7 +292,7 @@ def run_avaliacoes(
     REQUIRED_COLS = ["iv_teorica", "ivs_modelo", "log_moneyness", "T"]
 
     def _ensure_pred_col(df: pd.DataFrame) -> pd.DataFrame:
-        """Garante a existência de 'ivs_modelo'. Se existir 'ivs_modelo', cria uma cópia e mapeia."""
+        """Ensure existence of 'ivs_modelo'. If present, creates copy and maps predictions."""
         if "ivs_modelo" not in df.columns:
             for legacy in ("ivs_modelo",):
                 if legacy in df.columns:
@@ -307,7 +307,7 @@ def run_avaliacoes(
             raise ValueError(f"[{split}] Missing columns: {miss}")
         arr = df[REQUIRED_COLS].to_numpy()
         if not np.isfinite(arr).all():
-            raise ValueError(f"[{split}] Existem NaN/Inf nas colunas obrigatórias.")
+            raise ValueError(f"[{split}] NaN or Inf values detected in required columns.")
         if len(df) == 0:
             raise ValueError(f"[{split}] DataFrame vazio.")
 
@@ -327,9 +327,9 @@ def run_avaliacoes(
     def _binned_line(x, y, n_bins=n_bins_line):
         """
         Divide o eixo-x em quantis (n_bins) e devolve:
-          xc: média de x por bin
-          yc: média de y por bin (linha de tendência)
-          ys: desvio-padrão de y por bin (para banda ±1σ)
+          xc: mean of x per bin
+          yc: mean of y per bin (trend line)
+          ys: standard deviation of y per bin (for ±1σ band)
         """
         edges = np.quantile(x, np.linspace(0, 1, n_bins + 1))
         for k in range(1, len(edges)):
@@ -350,7 +350,7 @@ def run_avaliacoes(
             return df.sample(max_points_scatter, random_state=random_state)
         return df
 
-    # ----------------- colormap para hexbin (cores da paleta) -----------------
+    # ----------------- Colormap for hexbin (palette colors) -----------------
     hexbin_cmap = LinearSegmentedColormap.from_list(
         "hexbin_map", [COLOR_BRANCO, COLOR_AZUL2, COLOR_AZUL3]
     )
@@ -440,7 +440,7 @@ def run_avaliacoes(
 
     # ----------------- bins 5×5 em matriz -----------------
     def _compute_5x5_mats(df):
-        """Devolve dicionário com 5 matrizes (RMSE, MAE, MedAE, Bias, Count) 5×5."""
+        """Return dictionary containing 5x5 performance metric matrices (RMSE, MAE, MedAE, Bias, Count)."""
         y_true = df["iv_teorica"].to_numpy()
         y_pred = df["ivs_modelo"].to_numpy()
         e = y_pred - y_true
@@ -455,7 +455,7 @@ def run_avaliacoes(
                     v[i] = v[i-1] + 1e-12
 
         m_bin = np.digitize(m, m_edges[1:-1], right=True) + 1  # 1..5 (colunas)
-        T_bin = np.digitize(T, T_edges[1:-1], right=True) + 1  # 1..5 (linhas)
+        T_bin = np.digitize(T, T_edges[1:-1], right=True) + 1  # 1..5 (rows)
 
         RMSE = np.full((5,5), np.nan)
         MAE  = np.full((5,5), np.nan)
@@ -467,7 +467,7 @@ def run_avaliacoes(
             for j in range(1,6):    # T_bin (linha)
                 mask = (m_bin == i) & (T_bin == j)
                 cnt = int(mask.sum())
-                Cnt[j-1, i-1] = cnt  # linhas = T_bin, colunas = m_bin
+                Cnt[j-1, i-1] = cnt  # rows = T_bin, cols = m_bin
                 if cnt >= min_count_bin:
                     ee = e[mask]
                     RMSE[j-1, i-1] = _rmse(ee)
@@ -528,7 +528,7 @@ def run_avaliacoes(
         analysis = r["analysis"]
         variant  = r["variant"]
 
-        # compat: garantir 'ivs_modelo'
+        # compatibility: ensure 'ivs_modelo'
         df = _ensure_pred_col(df_in)
 
         _fail_fast(df, split)
@@ -552,7 +552,7 @@ def run_avaliacoes(
         }
         new_rows.append(row)
 
-        # gráficos — também mostrar (plt.show) se display_in_notebook=True
+        # plots — show (plt.show) if display_in_notebook=True
         base = model.lower()
         show = bool(display_in_notebook)
         if analysis == "geral":
@@ -569,7 +569,7 @@ def run_avaliacoes(
             _plot_scatter(df, os.path.join(DIR_GRAFICOS, f"{base}_scatter_{split}.png"),
                           title=f"Observed vs Predicted IV — {model} ({split})", show=show)
 
-    # consolidar globais (substitui linhas destes 4 splits do mesmo modelo; preserva outras entradas)
+    # consolidate global metrics (updates 4 splits for model; preserves existing)
     globais_df_new = pd.DataFrame(new_rows)
     if not old_globais.empty:
         mask_same_model = (old_globais["model"] == model) & (old_globais["split"].isin(globais_df_new["split"].unique()))
@@ -595,7 +595,7 @@ def run_avaliacoes(
         "globais_rows": int(len(globais_out)),
         "has_bins_5x5": mats_5x5 is not None,
         "graficos_dir": DIR_GRAFICOS,
-        "globais_df": globais_out,   # devolve a tabela para inspeção/uso no notebook
+        "globais_df": globais_out,   # returns table for inspection/usage in notebook
     }
 # English compatibility alias
 run_evaluations = run_avaliacoes
