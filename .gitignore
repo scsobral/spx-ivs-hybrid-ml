@@ -57,3 +57,7 @@ _legacy_pt/
 # 7. Allow Essential Table Outputs
 !04_outputs/02_tables/*.xlsx
 !04_outputs/02_tables/**/*.xlsx
+
+# 8. Local Career Context
+CAREER_CONTEXT.md
+career*/
